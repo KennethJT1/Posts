@@ -1,32 +1,20 @@
-/* eslint-disable react/jsx-key */
 import "./App.css";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { CreatePost } from "./pages/CreatePost";
+import { Post } from "./pages/Post";
 
 function App() {
-  const [listOfPosts, setListOfPosts] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:6891/posts")
-      .then((resp) => {
-        setListOfPosts(resp.data);
-      })
-      .catch((err) => {
-        console.log("error", err.message);
-      });
-  }, []);
   return (
     <div className="App">
-      {listOfPosts.map((value, key) => {
-        return (
-          <div className="post">
-            <div className="title">{value.title}</div>
-            <div className="body">{value.postText}</div>
-            <div className="footer">{value.username}</div>
-          </div>
-        );
-      })}
+      <BrowserRouter>
+        <Link to="/create-post">Create A Post</Link>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/post/:id" element={<Post />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

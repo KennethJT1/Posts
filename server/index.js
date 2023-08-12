@@ -4,13 +4,18 @@ const dotenv = require("dotenv").config();
 
 const app = express();
 
-const db = require("./models");
 const sequelize = require("./models/index");
 const postRoute = require("./routes/Post");
+const commentRoute = require("./routes/Comment");
+const likeRoute = require("./routes/Likes");
+const userRoute = require("./routes/Users");
 
 app.use(express.json());
 app.use(cors());
 app.use("/posts", postRoute);
+app.use("/comments", commentRoute);
+app.use("/likes", likeRoute);
+app.use("/auth", userRoute);
 
 const PORT = process.env.PORT || 3000;
 

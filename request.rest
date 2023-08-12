@@ -1,5 +1,5 @@
 ### create post
-POST http://localhost:3000/posts HTTP/1.1
+POST http://localhost:6891/posts HTTP/1.1
 content-type: application/json
 
 {
@@ -8,6 +8,38 @@ content-type: application/json
     "username": "pawpaw"
 }
 
-### get post
+### get all post
 
 GET http://localhost:6891/posts HTTP/1.1
+
+### get post by id
+
+GET http://localhost:6891/posts/1 HTTP/1.1
+
+### get comments for specific post
+GET http://localhost:6891/comments/4 HTTP/1.1
+
+### create comment
+POST http://localhost:6891/comments HTTP/1.1
+content-type: application/json
+
+{
+    "commentBody": "Please like the video",
+    "postId": 4
+}
+
+### create user
+POST http://localhost:6891/auth HTTP/1.1
+content-type: application/json
+
+{
+    "username": "Harry408", "password": "1234"
+}
+
+### login user
+POST http://localhost:6891/auth/login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "Harry408", "password": "1234"
+}

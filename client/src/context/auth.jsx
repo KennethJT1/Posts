@@ -1,33 +1,45 @@
 import axios from "axios";
-import { useState, createContext, useContext,useEffect } from "react";
-const baseURL = import.meta.env.VITE_BASE_URL
+import { useState, createContext, useContext, useEffect } from "react";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
-const AuthContext  = createContext();
+const AuthContext = createContext();
 
-const AuthProvider = ({ children}) => {
-    const [auth, setAuth] = useState({
-        user: null,
-        token: ""
-    });
+const AuthProvider = ({ children }) => {
+  const [auth, setAuth] = useState({
+    username: "",
+    id: 0,
+    status: false,
+  });
 
-    // axios config
-    axios.defaults.baseURL = baseURL
-    axios.defaults.headers.common["Authorization"] = auth?.token;
+  axios.defaults.baseURL = baseURL;
 
-    //useEffect is to retain the data from auth which can be accessible by all component 
-    useEffect(()=> {
-        const data = localStorage.getItem("auth");
-        if(data) {
-            const parsed = JSON.parse(data);
-            setAuth({...auth, user: parsed.user, token:parsed.token })
+  useEffect(() => {
+    axios
+      .get("/auth/auth", {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      })
+      .then((response) => {
+        if (response.data.error) {
+          setAuth({ ...auth, status: false });
+        } else {
+          setAuth({
+            username: response.data.username,
+            id: response.data.id,
+            status: true,
+          });
         }
-    }, [])
+      });
+  }, []);
 
-    return (
-        <AuthContext.Provider value={[auth, setAuth]}>{children}</AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={[auth, setAuth]}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 const useAuth = () => useContext(AuthContext);
 
-export { useAuth, AuthProvider}
+export { useAuth, AuthProvider };

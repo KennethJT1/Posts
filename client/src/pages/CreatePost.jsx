@@ -1,34 +1,40 @@
+import { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/auth";
 
 export const CreatePost = () => {
+  const [auth, setAuth] = useAuth();
+
   const navigate = useNavigate();
 
   const initialValues = {
     title: "",
     postText: "",
-    username: "",
   };
+
+  useEffect(() => {
+    if (!localStorage.getItem("accessToken")) {
+      navigate("/login");
+    }
+  }, []);
+
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required("You must input a Title!"),
+    postText: Yup.string().required(),
+  });
 
   const onSubmit = (data) => {
     axios
-      .post("posts", data, 
-      // {
-      //   headers: { accessToken: localStorage.getItem("accessToken") },
-      // }
-      )
+      .post("/posts", data, {
+        headers: { accessToken: localStorage.getItem("accessToken") },
+      })
       .then((response) => {
         navigate("/");
       });
   };
-
-  const validationSchema = Yup.object().shape({
-    title: Yup.string().required(),
-    postText: Yup.string().required(),
-    username: Yup.string().min(5).max(20).required(),
-  });
 
   return (
     <div className="createPostPage">
@@ -44,28 +50,18 @@ export const CreatePost = () => {
             autocomplete="off"
             id="inputCreatePost"
             name="title"
-            placeholder="Title of your post"
+            placeholder="(Ex. Title...)"
           />
-
           <label>Post: </label>
           <ErrorMessage name="postText" component="span" />
           <Field
             autocomplete="off"
             id="inputCreatePost"
             name="postText"
-            placeholder="I love this post"
+            placeholder="(Ex. Post...)"
           />
 
-          <label>Username: </label>
-          <ErrorMessage name="username" component="span" />
-          <Field
-            autocomplete="off"
-            id="inputCreatePost"
-            name="username"
-            placeholder="johncom..."
-          />
-
-          <button type="submit">Create Post</button>
+          <button type="submit"> Create Post</button>
         </Form>
       </Formik>
     </div>

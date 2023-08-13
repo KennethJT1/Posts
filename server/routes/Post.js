@@ -27,7 +27,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", validateToken, async (req, res) => {
+router.post("/",validateToken, async (req, res) => {
   try {
     const post = req.body;
     post.username = req.user.username;
